@@ -5,7 +5,7 @@ var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
 
-	entry: path.resolve("src/app.js"),
+	entry: path.resolve("routes.js"),
 	output: {
 		path:path.resolve("dist"),
 		publicPath:"/",
@@ -26,6 +26,10 @@ module.exports = {
 			{
 				test: /\.html$/,
 				use: "html-loader",
+			},
+			{
+    		test: /\.(jpeg|png|gif|svg|jpg)$/,
+    		loader: "url-loader",
 			}
 		]
 	},
