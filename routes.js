@@ -3,6 +3,9 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import App from './app';
 import Page404 from './page404';
+import ShowName from './showname';
+import 'bootstrap/dist/css/bootstrap.css';
+
 
 class Routing extends React.Component {
 render(){
@@ -11,6 +14,7 @@ render(){
       <Switch>
         <Route exact path='/' component={App} />
         <Route exact path='/app' component={App} />
+        <Route exact path='/name' component={ShowName} />
         <Route path='*' component={Page404} />
       </Switch>
     </Router>

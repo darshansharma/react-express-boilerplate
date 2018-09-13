@@ -6,7 +6,7 @@ import webpackDevMiddleware from 'webpack-dev-middleware';
 function createWebpackMiddleware(compiler, publicPath) {
 	return webpackDevMiddleware(compiler, {
 		publicPath,
-		stats: 'errors-only',
+		stats: 'none',
 	})
 }
 
