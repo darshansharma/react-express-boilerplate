@@ -6,8 +6,8 @@ class Page404 extends React.Component {
 
   render() {
     return (
-      <div>
-        <img src={pnf} width='100%' height='auto'/>
+      <div align="center" style={{padding: '30px'}}>
+        <img src={pnf} width='1000' height='auto'/>
       </div>
     );
   }
