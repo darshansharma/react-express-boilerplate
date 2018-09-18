@@ -19,6 +19,7 @@ class MyStakeTeam extends React.Component{
     this.handleNameChange = this.handleNameChange.bind(this);
     this.dissmiss = this.dissmiss.bind(this);
     this.timedAlert = this.timedAlert.bind(this);
+    this.deleteRow = this.deleteRow.bind(this);
     let ws = new WebSocket("ws://localhost:8081", "myProtocol");
     ws.onmessage = (e) => {
       console.log('jdkfkasj');
@@ -49,6 +50,19 @@ class MyStakeTeam extends React.Component{
     setTimeout(() => {
       this.setState({ toggleAlert: false });
     }, 5000);
+  }
+
+  deleteRow(e, name, age, index){
+    axios.post('/deleteRow', {
+      name,
+      age
+    }).then( (response) => {
+      this.state.data.splice(index, 1);
+      this.forceUpdate();
+      console.log('Row deleted');
+    }).catch(function (error){
+      console.log(error);
+    });
   }
 
   submitData(e) {
@@ -110,6 +124,7 @@ class MyStakeTeam extends React.Component{
                 <th scope="row">{index + 1}</th>
                 <td>{record.name}</td>
                 <td>{record.age}</td>
+                <td><button style={{cursor:'pointer', background:'inherit', border: '0', color:'red'}} className="deldatabtn" onClick={(e) => this.deleteRow(e, record.name, record.age, index)}>X</button></td>
               </tr>
             )
           }

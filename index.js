@@ -16,16 +16,25 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 }));
 
-
 let webSocket;
 var db = pgp('postgres://darshan:block8@localhost:5432/testdb');
 
 const socket = new websocket.Server({ port: 8081 });
-console.log(socket);
+
+socket.broadcast = function broadcast(data) {
+  socket.clients.forEach(function each(client) {
+    console.log('IT IS GETTING INSIDE CLIENTS');
+    //console.log(client);
+    console.log(data);
+    client.send(data);
+  });
+};
+
 socket.on('connection', function connection(ws) { //ws is listening to connection
 	webSocket = ws;
 		ws.on('message', function incoming(message) {// triggers when client send message
 			console.log('received: %s', message);
+      socket.broadcast(message);
 			ws.send('Received message: '+ message);
 		});
 		ws.send('Connection to websocket created successfully');
@@ -40,15 +49,32 @@ client.connect(function(err) {
     client.query('LISTEN "event"');
     client.on('notification', function(data) {
         console.log(data.payload);
-				// socket.sockets.send(data.payload);
+				//webSocket.send(data.payload);
+        socket.broadcast(data.payload);
     });
+});
+
+app.post("/deleteRow", async (req, res) => {
+  try {
+		const user_name = req.body.name;
+		const user_age = req.body.age;
+		console.log(`DELETE FROM test WHERE name='${user_name}' AND age=${user_age}`);
+		const result = await db.any(`DELETE FROM test WHERE name='${user_name}' AND age=${user_age}`);
+		console.log(result);
+		return res.send('Row deleted successfully');
+	}
+	catch(e) {
+		console.log('Error: '+e);
+		return false;
+	}
 });
 
 app.use("/getNameUsingSocket", async (req, res) =>{
 	try {
 	    const name = await db.any('SELECT * FROM test WHERE age = $1', 21);
 	    console.log(name);
-			webSocket.send(name[0].name);
+			//webSocket.send(name[0].name);
+      socket.broadcast(name[0].name);
 			res.send(name);
 			return name;
 	}
@@ -96,7 +122,7 @@ app.post('/insertData', async (req, res) => {
 		console.log('Error: '+e);
 		return false;
 	}
-})
+});
 
 app.use("/helloworld", function(req, res){
 	res.send("Hello World!!");
